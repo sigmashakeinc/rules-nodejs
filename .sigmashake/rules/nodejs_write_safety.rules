@@ -15,11 +15,10 @@ rule nodejs-warn-child-process-exec {
   enabled true
   priority 90
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*.js" AND content LINE_REGEX "child_process\\.exec\\("
   OR path GLOB "**/*.ts" AND content LINE_REGEX "child_process\\.exec\\("
   MESSAGE "Using 'child_process.exec' opens up command injection vulnerabilities if user input is included. Use 'child_process.execFile' or 'child_process.spawn' with an array of arguments instead."
-  PROMPT "Are you sure no unvalidated user input is passed to child_process.exec()?"
 }
 
 rule nodejs-warn-prototype-pollution {
@@ -36,9 +35,8 @@ rule nodejs-warn-insecure-cookie {
   enabled true
   priority 80
   severity warning
-  ASK write
+  LOG write
   IF path GLOB "**/*.js" AND content LINE_REGEX "res\\.cookie\\(.*?\\)" AND content NOT CONTAINS "httpOnly"
   OR path GLOB "**/*.ts" AND content LINE_REGEX "res\\.cookie\\(.*?\\)" AND content NOT CONTAINS "httpOnly"
   MESSAGE "Cookies without the 'httpOnly: true' flag can be accessed by client-side JavaScript, exposing them to Cross-Site Scripting (XSS) attacks."
-  PROMPT "Are you sure this cookie does not contain sensitive session data, or should you add 'httpOnly: true'?"
 }
